@@ -5,17 +5,28 @@
 
 using namespace std;
 
-std::string manageMoto(int road, int gap, int platform, int speed, int coordX) {
-    if (gap > speed) {
-        return "SPEED";
+std::string manageMoto(int road, int gap, int platform, int speed, int coordX, bool &jumped) {
+    int nextPosition = coordX + speed;
+    if ( jumped ) {
+        return "SLOW";
     }
-    if (coordX + speed > (road - coordX) + gap ) {
-        return "JUMP"
+    if ( nextPosition > road ) {
+        jumped = true;
+        return "JUMP";
     }
-    return "WAIT";
+
+    if ( speed > gap + 1 ) {
+        return "SLOW";
+    }
+    else if (speed == gap + 1) {
+        return "WAIT";
+    }
+    else {
+       return "SPEED";
+    }
 }
 
-void move(int coordX, int speed) {
+int move(int coordX, int speed) {
     return coordX + speed;
 }
 
@@ -31,6 +42,7 @@ int main()
     cin >> gap; cin.ignore();
     int platform; // the length of the landing platform.
     cin >> platform; cin.ignore();
+    bool jumped = false;
 
     // game loop
     while (1) {
@@ -41,9 +53,9 @@ int main()
 
         // Write an action using cout. DON'T FORGET THE "<< endl"
         // To debug: cerr << "Debug messages..." << endl;
-
+        std::string action = manageMoto(road, gap, platform, speed, coordX, jumped);
         coordX = move(coordX, speed);
         // A single line containing one of 4 keywords: SPEED, SLOW, JUMP, WAIT.
-        cout << "SPEED" << endl;
+        cout << action << endl;
     }
 }
